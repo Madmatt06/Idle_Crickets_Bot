@@ -37,6 +37,8 @@ def run_discord_bot():
     #target_delay = 15
     last_message_time = time.time()
     cricket_time_target = last_message_time + (target_delay)
+    timezoneOffset = 6
+
 
     async def cricket_timer():
         while True:
@@ -44,13 +46,14 @@ def run_discord_bot():
                 nonlocal cricket_time_target
                 nonlocal last_message_time
                 nonlocal target_delay
+                nonlocal timezoneOffset
                 global Bot_Enabled
                 print('cricket loop')
                 print(f'delay {target_delay}')
                 if not Bot_Enabled:
                     await asyncio.sleep(30)
                     break
-                if (int(datetime.now().strftime("%H")) >= 22) or (int(datetime.now().strftime("%H")) < 6):
+                if ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) >= 22) or ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) < 6):
                     print('Bot is no longer in service time. Modifying last message time to enable bot in service time.')
                     last_message_time = 6 - target_delay
                 cricket_time_target = last_message_time + target_delay
