@@ -13,6 +13,8 @@ async def send_message(message, user_message, is_private):
     if user_message == 'enable': Bot_Enabled = True; print('enabled')
     try:
         response = responses.handle_response(user_message)
+        if (not Bot_Enabled) and (user_message != 'disable' and user_message != 'enable'):
+            return
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)
@@ -55,7 +57,7 @@ def run_discord_bot():
                     break
                 if ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) >= 22) or ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) < 6):
                     print('Bot is no longer in service time. Modifying last message time to enable bot in service time.')
-                    last_message_time = 6 - target_delay
+                    last_message_time = last_message_time + 1800
                 cricket_time_target = last_message_time + target_delay
                 print(f'Activation time {cricket_time_target}. Current time {time.time()}')
                 if cricket_time_target <= time.time():
@@ -69,7 +71,7 @@ def run_discord_bot():
                     last_message_time = time.time()
                     cricket_time_target = last_message_time + target_delay
                 print(f'waiting {cricket_time_target - time.time()} seconds')
-                await asyncio.sleep(cricket_time_target - time.time()) #if ((cricket_time_target - time.time()) > 0) else await asyncio.sleep(1)
+                await asyncio.sleep(cricket_time_target - time.time()) if ((cricket_time_target - time.time()) > 0) else await asyncio.sleep(1)
 
     @client.event
     async def on_ready():
@@ -85,14 +87,15 @@ def run_discord_bot():
     async def on_message(message):
         if message.author == client.user:
             return
+        nonlocal last_message_time
+        last_message_time = time.time()
+        print(f'recived message: {message.content}')
         username = str(message.author)
         user_message = str(message.content)
         channel = str(message.channel)
         if user_message[0] == '!':
             user_message = user_message[1:]
             await send_message(message, user_message, is_private=False)
-        nonlocal last_message_time
-        last_message_time = time.time()
 
     @client.event
     async def on_disconnect():

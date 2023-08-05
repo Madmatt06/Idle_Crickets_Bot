@@ -16,3 +16,7 @@ logs/
 
 #Ignore ISO images
 *.iso
+
+.idea
+
+*.tar
