@@ -6,6 +6,7 @@ from datetime import datetime
 
 
 Bot_Enabled = True
+loop_running = False
 
 async def send_message(message, user_message, is_private):
     global Bot_Enabled
@@ -77,11 +78,16 @@ def run_discord_bot():
     async def on_ready():
         await client.change_presence(activity=discord.Game(f'*chirp*'))
         print(f'{client.user} is now running!')
-        loop = asyncio.get_event_loop()
-        loop.create_task(cricket_timer())
-        #this caused a warning of loop already running.(aka ignored error)
-        #loop.run_forever()
-        print("loop created")
+        global loop_running
+        if not loop_running:
+            loop = asyncio.get_event_loop()
+            loop.create_task(cricket_timer())
+            #this caused a warning of loop already running.(aka ignored error)
+            #loop.run_forever()
+            loop_running = True
+            print('loop created')
+        else:
+            print('loop already running')
 
     @client.event
     async def on_message(message):
