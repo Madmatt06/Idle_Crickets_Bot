@@ -3,6 +3,7 @@ import responses
 import asyncio
 import time
 from datetime import datetime
+from random import randrange
 
 
 Bot_Enabled = True
@@ -66,9 +67,16 @@ def run_discord_bot():
                     #production channel id
                     channel_id = client.get_channel(1098802300039999592)
                     #testing channel id
-                    #channel_id = client.get_channel(1129296068434202698)
-                    await send_raw_message(
-                    'https://tenor.com/view/crickets-crickets-chirping-silence-awkward-silence-gif-5319192', channel_id)
+                    #channel_id = client.get_channel(1129319306065350656)
+                    easter_egg = (randrange(0, 1000) == 1000)
+                    if easter_egg:
+                        await send_raw_message(
+                            'https://tenor.com/view/dancing-cricket-gif-24701537',
+                            channel_id)
+                    else:
+                        await send_raw_message(
+                            'https://tenor.com/view/crickets-crickets-chirping-silence-awkward-silence-gif-5319192',
+                            channel_id)
                     last_message_time = time.time()
                     cricket_time_target = last_message_time + target_delay
                 print(f'waiting {cricket_time_target - time.time()} seconds')
