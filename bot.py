@@ -68,7 +68,7 @@ def run_discord_bot():
                     channel_id = client.get_channel(1098802300039999592)
                     #testing channel id
                     #channel_id = client.get_channel(1129319306065350656)
-                    easter_egg = (randrange(0, 1000) == 1000)
+                    easter_egg = (randrange(0, 1000) == 100)
                     if easter_egg:
                         await send_raw_message(
                             'https://tenor.com/view/dancing-cricket-gif-24701537',
