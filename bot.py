@@ -4,6 +4,7 @@ import asyncio
 import time
 from datetime import datetime
 from random import randrange
+import settings
 
 
 Bot_Enabled = True
@@ -31,7 +32,7 @@ async def send_raw_message(message, channel):
 
 
 def run_discord_bot():
-    TOKEN = 'OTY3OTkyODg2NDU5MjYwOTY4.GHWME5.vfyS_ecd8xBqSPzACFBgIVhtY1PGVEsQDSGzKs'
+    settings.check_settings()
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
@@ -115,4 +116,4 @@ def run_discord_bot():
     async def on_disconnect():
         print('Discord Client has been disconnected.')
 
-    client.run(TOKEN)
+    client.run(settings.DISCORD_TOKEN)
