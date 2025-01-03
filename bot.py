@@ -9,6 +9,7 @@ import settings
 
 Bot_Enabled = True
 loop_running = False
+targetChannel = 0
 
 async def send_message(message, user_message, is_private):
     global Bot_Enabled
@@ -53,9 +54,10 @@ def run_discord_bot():
                 nonlocal target_delay
                 nonlocal timezoneOffset
                 global Bot_Enabled
+                global targetChannel
                 print('cricket loop')
                 print(f'delay {target_delay}')
-                if not Bot_Enabled:
+                if not Bot_Enabled or targetChannel == 0:
                     await asyncio.sleep(30)
                     break
                 if ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) >= 22) or ((int(datetime.utcnow().strftime("%H"))-timezoneOffset) < 6):
@@ -65,10 +67,7 @@ def run_discord_bot():
                 print(f'Activation time {cricket_time_target}. Current time {time.time()}')
                 if cricket_time_target <= time.time():
                     print("Cricket timer expired")
-                    #production channel id
-                    channel_id = client.get_channel(1098802300039999592)
-                    #testing channel id
-                    #channel_id = client.get_channel(1129319306065350656)
+                    channel_id = client.get_channel(targetChannel)
                     easter_egg = (randrange(0, 1000) == 100)
                     if easter_egg:
                         await send_raw_message(
@@ -103,13 +102,19 @@ def run_discord_bot():
         if message.author == client.user:
             return
         nonlocal last_message_time
-        last_message_time = time.time()
+        global targetChannel
+        if message.channel.id == targetChannel:
+            last_message_time = time.time()
         print(f'recived message: {message.content}')
         username = str(message.author)
         user_message = str(message.content)
         channel = str(message.channel)
         if user_message[0] == '!':
             user_message = user_message[1:]
+            if user_message == 'Set channel':
+                targetChannel = message.channel.id
+                await send_raw_message('Channel Set', message.channel)
+                return
             await send_message(message, user_message, is_private=False)
 
     @client.event
